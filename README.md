@@ -30,21 +30,21 @@ La elección entre estos scripts en un entorno de producción depende de los req
 ### Ejecución UDP (Demostración de Rapidez)
 1. Abre una terminal e inicia el servidor pasivo:
    ```bash
-   python servidor_udp.py
+   python Servidor_UDP.py
 
 2. Abre una segunda terminal e inicia el servidor pasivo:
    ```bash
-   python cliente_udp.py
+   python Cliente_UDP.py
 
 3. Ingresa una frase y observa la respuesta instantánea sin necesidad de un handshake previo.
 
 ### Ejecución TCP (Demostración de Conexión)
 1. Abre una terminal e inicia el servidor:
    ```bash
-   python servidor_tcp.py
+   python Servidor_TCP.py
 
 2. Abre una segunda terminal y conecta el cliente:
    ```bash
-   python cliente_tcp.py
+   python Cliente_TCP.py
 
 3. Ingresa una frase. Nota cómo el servidor crea un nuevo socket dedicado internamente mediante accept() para procesar esta conexión de forma confiable.
