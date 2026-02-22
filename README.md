@@ -48,3 +48,31 @@ La elección entre estos scripts en un entorno de producción depende de los req
    python Cliente_TCP.py
 
 3. Ingresa una frase. Nota cómo el servidor crea un nuevo socket dedicado internamente mediante accept() para procesar esta conexión de forma confiable.
+
+
+
+## 1. El Ecosistema UDP: Comunicación Sin Conexión
+
+En UDP, la comunicación se asemeja a un servicio postal. No hay garantía de entrega ni orden, pero la velocidad es máxima debido a la ausencia de un proceso de conexión inicial.
+
+| Fase | Servidor UDP (`servidor_udp.py`) | Cliente UDP (`cliente_udp.py`) |
+| :--- | :--- | :--- |
+| **1. Inicialización** | `sock_serv = socket(AF_INET, SOCK_DGRAM)`<br>Crea un socket pasivo para datagramas. | `sock_cli = socket(AF_INET, SOCK_DGRAM)`<br>Crea un socket activo para datagramas. |
+| **2. Asignación** | `sock_serv.bind(('', 12000))`**<br>**Se "ata" rígidamente al puerto 12000 para que los clientes sepan a dónde enviar. | *(Implícita)*<br>El sistema operativo le asigna un puerto efímero aleatorio al momento de enviar. |
+| **3. ¿Qué espera?** | `mensaje, dir = sock_serv.recvfrom(2048)`<br>**Espera:** Un datagrama entrante. Se bloquea (o usa timeout) hasta que un paquete golpea el puerto 12000. | `mensaje = input("Ingrese frase:")`<br>**Espera:** Que el usuario humano escriba el mensaje por teclado. |
+| **4. ¿Qué hace y cómo?** | **Hace:** Extrae los datos y guarda la IP/Puerto de origen (`dir`).<br>Luego, procesa el *print* de recepción. | **Hace:** Dispara el mensaje hacia la red.<br>`sock_cli.sendto(msj, (ip_serv, 12000))` |
+| **5. Respuesta** | `sock_serv.sendto(respuesta, dir)`<br>**Hace:** Dispara la respuesta hardcodeada exactamente a la dirección que guardó en el paso 3. | `res, dir = sock_cli.recvfrom(2048)`<br>**Espera:** El datagrama de vuelta desde el servidor para imprimirlo en pantalla. |
+
+---
+
+## 2. El Ecosistema TCP: Comunicación Orientada a la Conexión
+
+En TCP, la comunicación se asemeja a una llamada telefónica. Hay un protocolo estricto de saludo de 3 vías (*Three-way Handshake*) antes de que se envíe el primer byte de datos útiles.
+
+| Fase | Servidor TCP (`servidor_tcp.py`) | Cliente TCP (`cliente_tcp.py`) |
+| :--- | :--- | :--- |
+| **1. Inicialización** | `sock_serv = socket(AF_INET, SOCK_STREAM)`<br>Crea un socket pasivo para flujos continuos. | `sock_cli = socket(AF_INET, SOCK_STREAM)`<br>Crea un socket activo para flujos continuos. |
+| **2. Preparación** | `sock_serv.bind(('', 12000))` y luego `sock_serv.listen(1)`<br>Abre la puerta y configura una cola de espera para 1 cliente. | *(Ninguna acción pasiva previa)* |
+| **3. Conexión (El Saludo)** | `sock_dedicado, dir = sock_serv.accept()`<br>**Espera:** Una petición de conexión.<br>**Hace:** Clona el socket original y crea uno **nuevo** (`sock_dedicado`) exclusivo para este cliente. | `sock_cli.connect((ip_serv, 12000))`<br>**Hace:** Inicia el saludo de 3 vías de forma invisible para el programador. |
+| **4. Transferencia** | `datos = sock_dedicado.recv(1024)`<br>**Espera:** El flujo de bytes a través del canal ya establecido. | `sock_cli.send(mensaje.encode())`<br>**Hace:** Empuja los datos por el canal seguro. Ya no necesita indicar la IP de destino. |
+| **5. Finalización** | `sock_dedicado.send(respuesta)`<br>`sock_dedicado.close()`<br>**Hace:** Responde y luego destruye el socket exclusivo. El socket principal sigue vivo en su ciclo. | `respuesta = sock_cli.recv(1024)`<br>`sock_cli.close()`<br>**Hace:** Recibe la respuesta, cierra su socket y termina la ejecución. |
