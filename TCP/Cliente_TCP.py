@@ -1,7 +1,7 @@
 from socket import *
 
 nombre_servidor = '127.0.0.1'
-puerto_servidor = 12000
+puerto_servidor = 5000
 
 socket_cliente = socket(AF_INET, SOCK_STREAM)
 

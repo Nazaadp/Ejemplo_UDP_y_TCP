@@ -2,7 +2,7 @@ from socket import *
 
 # 1. Definimos la IP destino (Capa 3) y el puerto (Capa 4)
 nombre_servidor = '127.0.0.1' # Localhost para pruebas
-puerto_servidor = 12000
+puerto_servidor = 4000
 
 # 2. Creamos el socket activo del cliente
 socket_cliente = socket(AF_INET, SOCK_DGRAM)

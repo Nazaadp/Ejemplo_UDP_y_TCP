@@ -1,7 +1,7 @@
 from socket import *
 
 # 1. Definimos el puerto de la aplicación (Capa 4)
-puerto_servidor = 12000
+puerto_servidor = 4000
 
 # 2. Creamos el Socket. 
 # AF_INET indica IPv4. SOCK_DGRAM indica que usaremos UDP.
@@ -19,7 +19,7 @@ while True:
 
     print(f'Recibido - {mensaje} - de cliente, respondiendo...')
 
-    respuesta_hardcodeada = "¡Hola! Esta es una respuesta rápida desde el Servidor UDP."
+    respuesta = "¡Hola! Esta es una respuesta rápida desde el Servidor UDP."
     
     # sendto() dispara el paquete de texto hardcodeado usando la dirección guardada
-    socket_servidor.sendto(respuesta_hardcodeada.encode(), direccion_cliente)
+    socket_servidor.sendto(respuesta.encode(), direccion_cliente)

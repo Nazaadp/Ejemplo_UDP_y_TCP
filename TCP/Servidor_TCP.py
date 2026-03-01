@@ -1,6 +1,6 @@
 from socket import *
 
-puerto_servidor = 12000
+puerto_servidor = 5000
 
 # 1. Creamos el socket. SOCK_STREAM indica que usaremos TCP.
 socket_servidor = socket(AF_INET, SOCK_STREAM)
@@ -23,9 +23,9 @@ while True:
 
     print(f'Recibido {oracion}  de cliente, respondiendo...')
 
-    respuesta_hardcodeada = "¡Hola! Conexión TCP establecida y mensaje procesado exitosamente."
+    respuesta = "¡Hola! Conexión TCP establecida y mensaje procesado exitosamente."
     
-    socket_conexion.send(respuesta_hardcodeada.encode())
+    socket_conexion.send(respuesta.encode())
     
     # 5. Cerramos ESTA conexión específica, pero el servidor sigue escuchando
     socket_conexion.close()
